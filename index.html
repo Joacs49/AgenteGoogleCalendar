@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enviar datos WhatsApp</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Simular Datos WhatsApp</h2>
+      <form id="whatsappForm">
+        <label>Instancia de Conexión</label>
+        <input type="text" name="instance" required />
+
+        <label for="remoteJid">Número de Celular</label>
+        <input
+          type="tel"
+          name="remoteJid"
+          pattern="^51\d{7,13}$"
+          placeholder="Ej. 51987654321"
+          required
+        />
+
+        <label>Nombre de usuario</label>
+        <input type="text" name="pushName" required />
+
+        <label for="messageType">Tipo de Mensaje</label>
+        <select name="messageType" id="messageType" required>
+          <option value="">-- Selecciona --</option>
+          <option value="text">Texto</option>
+          <option value="audio">Audio</option>
+        </select>
+
+        <div id="textMessageContainer" style="display: none">
+          <label for="textMessage">Escribe tu mensaje</label>
+          <textarea
+            id="textMessage"
+            name="textMessage"
+            rows="4"
+            cols="43"
+          ></textarea>
+        </div>
+
+        <div id="audioMessageContainer" style="display: none;">
+            <label for="audioMessage">Graba un mensaje de audio</label>
+            <button id="startRecording" type="button">Iniciar Grabación</button>
+            <button id="stopRecording" type="button" style="display: none;">Detener Grabación</button>
+            <audio id="audioPlayback" controls style="display: none;"></audio>
+          </div>
+
+        <button type="submit">Enviar</button>
+        <div class="status" id="status"></div>
+      </form>
+    </div>
+
+    <script src="/config.js"></script>
+    <script src="/messageType.js"></script>
+    <script src="/script.js"></script>
+  </body>
+</html>
