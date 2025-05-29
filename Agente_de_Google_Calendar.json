@@ -1,0 +1,711 @@
+{
+  "name": "Agente de Google Calendar",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/agent-calendar",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -3780,
+        240
+      ],
+      "id": "42c75b7d-1cee-4d89-9bdf-4eaa27e84da4",
+      "name": "Webhook",
+      "webhookId": "19d1a6ce-43c6-4636-8689-69ce17e3b43a"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cb26cecb-b1d3-4dec-8ad8-5f7e66ab3b8d",
+              "leftValue": "={{ $json.body.body.data.key.fromMe }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3560,
+        240
+      ],
+      "id": "8b265cee-557b-4b53-a80f-ec3f5757e9e0",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9d7ac59a-79ea-4fc7-b527-a14ce1b2e52e",
+              "leftValue": "={{ $json.TipoMensaje }}",
+              "rightValue": "audio",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3080,
+        220
+      ],
+      "id": "8e151b86-ffcd-4f74-83b7-805efed44b97",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={\n  \"conversation\": \"{{ $json.conversation || $('Mensaje Convertido a Texto').item.json.body.data.message.conversation }}\"\n}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Todos los mensajes que envies seran en español."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        -1120,
+        200
+      ],
+      "id": "27afcf98-f8c8-4cc2-9ac8-ca8879af0a32",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "llama3:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -1200,
+        420
+      ],
+      "id": "3ec3c2bc-1f41-4978-b8f4-44a1327be262",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "Oa7NnChLJM7sWgQi",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4d81f72b-563c-45b2-8e84-c40754e74a70",
+              "name": "instance",
+              "value": "{{ $json.body.instance}}",
+              "type": "string"
+            },
+            {
+              "id": "108f9a73-65cf-43ac-80db-c44562b81308",
+              "name": "key.remotejid",
+              "value": "={{ $json.body.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "a71e46d5-ff9e-4df7-88b4-be6ba4a785aa",
+              "name": "NombreUsuario",
+              "value": "={{ $('Webhook').item.json.body.body.data.pushName }}",
+              "type": "string"
+            },
+            {
+              "id": "6ce45c77-a0ea-4cb1-93a9-0dfd2cfe4b49",
+              "name": "TipoMensaje",
+              "value": "={{ $json.body.body.data.messageType }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3300,
+        220
+      ],
+      "id": "7b369e69-d08a-453b-be44-30768b607998",
+      "name": "Variables WhatsApp"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "Accion Realizada",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -380,
+        -100
+      ],
+      "id": "81d5a8fa-336f-4196-ad77-9d41d7f8d7dc",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "28ff5558-3cca-4fb2-900a-8668f809105a",
+              "name": "conversation",
+              "value": "={{ $('Webhook').item.json.body.body.data.message.conversation }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2360,
+        340
+      ],
+      "id": "d84e59dc-fbbe-4e54-bf9c-65ef16cd9702",
+      "name": "Mensaje Texo"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "58999824-e6f6-4b67-9704-d7aa32c9a1f0",
+              "name": "instance",
+              "value": "={{ $('Variables WhatsApp').item.json.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "49264783-5382-4fd9-938c-64557771e65d",
+              "name": "key.remotejid",
+              "value": "={{ $('Variables WhatsApp').item.json.key.remotejid }}",
+              "type": "string"
+            },
+            {
+              "id": "b0938790-e7df-4bd7-9927-91f2d6500902",
+              "name": "conversation",
+              "value": "={{ $json.results.channels[0].alternatives[0].transcript }}",
+              "type": "string"
+            },
+            {
+              "id": "45438062-c34d-42db-a7d0-98ed7e6e2982",
+              "name": "NombreUsuario",
+              "value": "={{ $('Variables WhatsApp').item.json.NombreUsuario }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1680,
+        60
+      ],
+      "id": "0ed2771b-c355-4da4-a120-16b36a526d53",
+      "name": "Mensaje Convertido a Texto"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9a82f5e8-b0e2-40c2-a657-5ef94f307b4e",
+              "leftValue": "$json.text",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "3f3da1b2-d14f-4744-971d-36f5eedaba87",
+              "leftValue": "$('Mensaje Convertido a Texto').item.json.body.data.message.conversation",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1400,
+        220
+      ],
+      "id": "b9a7a32e-ef75-44ad-9cac-85d910dbd893",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://gate.whapi.cloud/messages/text",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"aeoLdjdUMYDK6gVopDtGoeELUsXf8E7h\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"{{ $('Variables WhatsApp').item.json.key.remotejid }}\",\n  \"body\": \"{{ $json.output.replace(/\\\\n/g, '').replace(/\\\\s+/g, ' ').replace(/\\\"/g, '\\\\\\\"').trim() }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -620,
+        -100
+      ],
+      "id": "b71f04e1-129d-4c68-98fa-9427e78c8bd5",
+      "name": "WhatsApp"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://gate.whapi.cloud/media",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"aeoLdjdUMYDK6gVopDtGoeELUsXf8E7h\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"{{ $json.key.remotejid }}\", \n  \"mimetype\": \"{{ $('Webhook').item.json.body.body.data.message.audioMessage.mimetype }}\",\n  \"media\": \"{{ $('Webhook').item.json.body.body.data.message.audioMessage.base64 }}\"\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2800,
+        60
+      ],
+      "id": "222f1d05-0fbe-4657-8756-d35fa93e0868",
+      "name": "Guardar Audio"
+    },
+    {
+      "parameters": {
+        "url": "=https://gate.whapi.cloud/media/{{ $json.media[0].id }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"aeoLdjdUMYDK6gVopDtGoeELUsXf8E7h\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2380,
+        60
+      ],
+      "id": "fd9433e2-2087-40e6-b55a-98d42c2f9937",
+      "name": "Descargar Audio"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": " https://api.deepgram.com/v1/listen",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"Authorization\": \"Token f197d3592823e4aa08cf7bc67fe74960b6a5c7d4\"\n}",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2060,
+        60
+      ],
+      "id": "2f657cc5-0e9c-47d4-80aa-e86886abfac4",
+      "name": "Convertir Audio a Texto"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -560,
+        540
+      ],
+      "id": "0b71924b-e46f-4921-b0fc-da0fa76e575f",
+      "name": "Obtener Eventos"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -400,
+        540
+      ],
+      "id": "801a8144-594a-4f5c-853e-3ca02a9cfa85",
+      "name": "Crear Eventos"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        540
+      ],
+      "id": "78d71913-954b-4cab-b9b3-8213e7cda22f",
+      "name": "Crear Eventos Con Invitacion"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "updateFields": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        360
+      ],
+      "id": "15da2c05-e57f-4771-a621-1055d0324f23",
+      "name": "Actualizar Evento"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -220,
+        200
+      ],
+      "id": "395a4671-2022-44b1-a611-8c3c0933dcd2",
+      "name": "Eliminar Evento"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1060,
+        420
+      ],
+      "id": "312673bd-4d92-45ab-84f4-1c073c70dc1c",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "38QZ7F2e6RltDnaZ",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Variables WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Guardar Audio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mensaje Texo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Variables WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensaje Texo": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensaje Convertido a Texto": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Audio": {
+      "main": [
+        [
+          {
+            "node": "Descargar Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar Audio": {
+      "main": [
+        [
+          {
+            "node": "Convertir Audio a Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convertir Audio a Texto": {
+      "main": [
+        [
+          {
+            "node": "Mensaje Convertido a Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Eventos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear Eventos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear Eventos Con Invitacion": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar Evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eliminar Evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7362d0ad-29d7-40ef-a1f6-59e24375c8e3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "132b519376444cbfd3b1192e2650b60e63a9da737f5a9f25b6801c6782d91028"
+  },
+  "id": "Q0cGr7nec8klPEWD",
+  "tags": []
+}

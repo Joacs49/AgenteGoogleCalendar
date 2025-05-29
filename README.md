@@ -2,13 +2,13 @@
 
 Esta aplicación web permite simular el envío de datos de mensajes de WhatsApp (texto o audio) a un webhook configurado, útil para pruebas y desarrollo de integraciones.
 
-## Características
+# Características
 
 - Envío de mensajes de texto o audio simulados a un endpoint HTTP.
 - Grabación de mensajes de audio directamente desde el navegador.
 - Interfaz sencilla y responsiva.
 
-## Estructura del Proyecto
+# Estructura del Proyecto
 
 - `index.html`: Interfaz principal del formulario.
 - `styles.css`: Estilos para la interfaz.
@@ -17,7 +17,7 @@ Esta aplicación web permite simular el envío de datos de mensajes de WhatsApp 
 - `script.js`: Lógica para enviar los datos del formulario al webhook.
 - `.gitignore`: Ignora el archivo de configuración sensible.
 
-## Configuración
+# Configuración
 
 1. Clona el repositorio.
 2. Modifica `config.js` para establecer tu URL de webhook y número de teléfono de prueba:
@@ -28,7 +28,7 @@ Esta aplicación web permite simular el envío de datos de mensajes de WhatsApp 
     };
     ```
 
-## Uso
+# Uso
 
 1. Abre `index.html` en tu navegador.
 2. Completa los campos requeridos:
@@ -39,7 +39,9 @@ Esta aplicación web permite simular el envío de datos de mensajes de WhatsApp 
 3. Si eliges audio, graba tu mensaje y luego envíalo.
 4. Haz clic en "Enviar" para simular el envío al webhook.
 
-## Notas
-
+# Notas
 - El audio se graba en formato OGG y se convierte a base64 antes de enviarse.
 - El endpoint debe estar preparado para recibir la estructura JSON generada por el formulario.
+
+# Proyecto
+Para poder utilizar el proyecto, importar el archivo Agente_de_Google_Calendar.json desde n8n
