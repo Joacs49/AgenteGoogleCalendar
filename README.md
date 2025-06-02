@@ -45,3 +45,5 @@ Esta aplicación web permite simular el envío de datos de mensajes de WhatsApp 
 
 # Proyecto
 Para poder utilizar el proyecto, importar el archivo Agente_de_Google_Calendar.json desde n8n
+
+<img alt="Imagen del agente" src="./Agente_de_Google_Calendar.json" width="1400">
